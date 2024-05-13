@@ -1,0 +1,12 @@
+LICENSE
+README.md
+pyproject.toml
+setup.py
+src/valiant_valiant_inequality_prover/__init__.py
+src/valiant_valiant_inequality_prover/valiant_valiant_inequality_prover.py
+src/valiant_valiant_inequality_prover/__init__.py
+src/valiant_valiant_inequality_prover/valiant_valiant_inequality_prover.py
+valiant_valiant_inequality_prover.egg-info/PKG-INFO
+valiant_valiant_inequality_prover.egg-info/SOURCES.txt
+valiant_valiant_inequality_prover.egg-info/dependency_links.txt
+valiant_valiant_inequality_prover.egg-info/top_level.txt

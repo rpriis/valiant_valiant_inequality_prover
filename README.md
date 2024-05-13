@@ -1,0 +1,1 @@
+Python implementation of the automatic inequality prover [proposed by Valiant & Valiant](https://doi.org/10.1137/151002526).

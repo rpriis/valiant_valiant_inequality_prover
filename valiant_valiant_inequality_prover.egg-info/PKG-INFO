@@ -1,0 +1,17 @@
+Metadata-Version: 2.1
+Name: valiant_valiant_inequality_prover
+Version: 0.0.1
+Summary: Python implementation of the automatic inequality prover proposed by Valiant & Valiant (https://doi.org/10.1137/151002526)
+Home-page: http://packages.python.org/valiant_valiant_inequality_prover
+Author: Richard Riis
+Author-email: Richard Riis <richardpriis@gmail.com>
+Project-URL: Homepage, https://github.com/rpriis/valiant_valiant_inequality_prover
+Project-URL: Issues, https://github.com/rpriis/valiant_valiant_inequality_prover/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+Python implementation of the automatic inequality prover [proposed by Valiant & Valiant](https://doi.org/10.1137/151002526).

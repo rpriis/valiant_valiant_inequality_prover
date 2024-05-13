@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "valiant_valiant_inequality_prover"
+version = "0.0.1"
+authors = [
+  { name="Richard Riis", email="richardpriis@gmail.com" },
+]
+description = "Python implementation of the automatic inequality prover proposed by Valiant & Valiant (https://doi.org/10.1137/151002526)"
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/rpriis/valiant_valiant_inequality_prover"
+Issues = "https://github.com/rpriis/valiant_valiant_inequality_prover/issues"
