@@ -45,24 +45,24 @@ def merge_common_matrix_expressions(m):
     if m_non_zero.shape[0] < 2:  # not enough rows to bother merging
         return m_non_zero
 
-    # sort on all but the final column
-    order = np.lexsort([np.squeeze(np.asarray(m_non_zero[:, i])) for i in range(m_non_zero.shape[1] - 1)])
-
-    prev_unique, unique_rows = order[0], [order[0]]
-    # linear search for rows that are 'close'
-    for i in range(len(order) - 1):
-        if is_zero_ish(m_non_zero[order[i + 1], -1]):  # power is 0
+    num_rows = m_non_zero.shape[0]
+    included_row_indices = []
+    i = 0
+    while i < num_rows:
+        row_is_unique = True
+        if is_zero_ish(m_non_zero[i, -1], ):
             continue
-        if rows_close(m_non_zero[prev_unique, :-1], m_non_zero[order[i + 1], :-1]):
-            m_non_zero[prev_unique, -1] += m_non_zero[order[i + 1], -1]  # add their powers
-        else:
-            prev_unique = order[i + 1]
-            unique_rows.append(prev_unique)
-
+        for j in included_row_indices:
+            if rows_close(m_non_zero[j, :-1], m_non_zero[i, :-1]):
+                m_non_zero[j, -1] += m_non_zero[i, -1]
+                row_is_unique = False
+                break
+        if row_is_unique:
+            included_row_indices.append(i)
+        i += 1
 
     # Filter to merged rows
-    proposed_m = m_non_zero[sorted(unique_rows)]
-
+    proposed_m = m_non_zero[sorted(included_row_indices)]
     # remove rows with near-zero powers.
     proposed_m_non_zero = proposed_m[np.where(1 - vector_element_is_zero_ish(proposed_m[:, -1]))[0]]
 
@@ -88,7 +88,6 @@ def get_latex(m, mode='inline', include_geq=True, simplify=False):
     for i in range(m.shape[0]):
         latex_out += r'\left(\sum_j'
         if np.all(vector_element_is_zero_ish(m[i, :-1])):
-            print("all 0 ish")
             latex_out += '1'
         for j in range(m.shape[1] - 1):
             if is_zero_ish(m[i, j]) and simplify:  # power is 0
@@ -121,7 +120,7 @@ class SolverResult(dict):
 # 'merge_expressions' merges expressions before constructing the linear program
 def ineq_solver(inA, merge_common_expressions=True, round_near_zeroes=True):
     """
-    Decompose given inequality into Holder and Lp-monotonicity inequalities or assert its invalidity
+    Decompose given inequality into Holder and Lp-monotonicity inequalities or asserts its invalidity
 
     Parameters
     ----------
@@ -154,7 +153,9 @@ def ineq_solver(inA, merge_common_expressions=True, round_near_zeroes=True):
     >>> ineq_result.eq_valid
     True
     >>> ineq_result.holder_ineqs_matrix
-    array([[[ 1. ,  0. ,  0.5], [ 0. ,  1. ,  0.5], [ 0.5,  0.5, -1. ]]])
+    array([[[ 1. ,  0. ,  0.5],
+            [ 0. ,  1. ,  0.5],
+            [ 0.5,  0.5, -1. ]]])
     >>> ineq_result.holder_ineqs_overall_powers
     array([1.])
     >>> ineq_result.lp_mon_ineqs_matrix
@@ -215,15 +216,13 @@ def ineq_solver(inA, merge_common_expressions=True, round_near_zeroes=True):
                         # append to existing constraints
                         lin_constraints = np.c_[lin_constraints, new_constraint]
 
-    # Construct linear program
     lin_constraints = lin_constraints.T
     b = np.zeros(lin_constraints.shape[0])
     c = inA[:, -1]
 
-    # Solve linear program
-    res = linprog(-c, A_ub=-lin_constraints, b_ub=b, method='highs')
+    res = linprog(-c, A_ub=-lin_constraints, b_ub=b, method='highs-ipm', bounds=(None, None))
 
-    if not res.success:
+    if (not res.success) or not np.all(vector_element_is_zero_ish(res.upper.marginals)): # !!!
         return SolverResult({
             'eq_valid': False,
             'holder_ineqs_matrix': None,
@@ -265,6 +264,7 @@ def ineq_solver(inA, merge_common_expressions=True, round_near_zeroes=True):
 
     holder_flat_matrix = np.empty((len(holder_l), 3 * (dim + 1) + 1))
 
+
     for j in range(len(holder_c)):
         for k in range(3):
             v = None
@@ -299,9 +299,8 @@ def ineq_solver(inA, merge_common_expressions=True, round_near_zeroes=True):
         if is_zero_ish(float(linear_l[j])):
             lp_mon_flat_matrix[j, 6] = 12893287919891 # !!! need to test edgecases
         else:
-            print(linear_p[j], linear_l[j])
-            print(lp_mon_flat_matrix)
             lp_mon_flat_matrix[j, 6] = float(linear_p[j]) / float(linear_l[j])
+
 
     holder_flat_matrix = merge_common_matrix_expressions(holder_flat_matrix)
     lp_mon_flat_matrix = merge_common_matrix_expressions(lp_mon_flat_matrix)
@@ -341,5 +340,3 @@ if __name__ == '__main__':
     print(solver_result.holder_ineqs_overall_powers)
     print(solver_result.lp_mon_ineqs_matrix)
     print(solver_result.lp_mon_ineqs_overall_powers)
-
-
