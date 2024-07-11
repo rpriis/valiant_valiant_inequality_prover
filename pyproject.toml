@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "valiant_valiant_inequality_prover"
-version = "1.0.0"
+version = "1.0.3"
 authors = [
   { name="Richard Riis", email="richardpriis@gmail.com" },
 ]

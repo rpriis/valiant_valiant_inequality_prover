@@ -2,8 +2,8 @@ LICENSE
 README.md
 pyproject.toml
 setup.py
-prover/__init__.py
-prover/prover.py
+valiant_valiant_inequality_prover/__init__.py
+valiant_valiant_inequality_prover/prover.py
 valiant_valiant_inequality_prover.egg-info/PKG-INFO
 valiant_valiant_inequality_prover.egg-info/SOURCES.txt
 valiant_valiant_inequality_prover.egg-info/dependency_links.txt

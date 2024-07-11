@@ -2,15 +2,11 @@ import numpy as np
 from itertools import combinations
 from scipy.linalg import null_space
 from scipy.optimize import linprog
-from math import isclose
-from tkinter import Tk
 
 SEQS_MIN = 1
 EXPRS_MIN = 1
 ZERO_BOUND = 1e-8
 
-
-# np.set_printoptions(suppress=False)
 
 def get_combs(n, length):
     return list(combinations(range(n), length + 1))
